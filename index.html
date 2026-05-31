@@ -933,7 +933,19 @@ function closeSchema(){document.getElementById("schema-overlay").classList.remov
 function buildFormSummary(){
   if(cart.length===0){document.getElementById("form-summary").innerHTML='<div class="os-title">📋 Cerere de ofertă – fără produse în coș</div>';return;}
   const total=cart.reduce((s,i)=>s+i.total,0);
-  document.getElementById("form-summary").innerHTML=`<div class="os-title">🛒 Produse (${cart.length})</div>${cart.map(i=>`<div class="os-item"><span>${i.name}</span><span>${i.total.toLocaleString()} lei</span></div>`).join("")}<div class="os-total"><span>Total</span><span>${total.toLocaleString()} lei</span></div>`;
+  const items=cart.map(i=>{
+    const details=[];
+    if(i.houseColor&&i.houseColor!=="—") details.push("🎨 "+i.houseColor);
+    if(i.paint) details.push("🖌 Vopsit");
+    if(i.slide&&i.slide!=="—") details.push("🛝 "+i.slide);
+    if(i.swing&&i.swing!=="—") details.push("🌀 "+i.swing);
+    if(i.montaj) details.push("🔧 Montaj inclus");
+    return `<div class="os-item" style="flex-direction:column;align-items:flex-start;gap:2px;padding:4px 0">
+      <div style="display:flex;justify-content:space-between;width:100%"><span style="font-weight:800;color:var(--navy)">${i.name}</span><span style="font-weight:800">${i.total.toLocaleString()} lei</span></div>
+      ${details.length?`<div style="font-size:.72rem;color:#64748b;font-weight:600">${details.join(" · ")}</div>`:""}
+    </div>`;
+  }).join("");
+  document.getElementById("form-summary").innerHTML=`<div class="os-title">🛒 Produse (${cart.length})</div>${items}<div class="os-total"><span>Total</span><span>${total.toLocaleString()} lei</span></div>`;
 }
 function openFormDirect(){buildFormSummary();document.getElementById("form-content").style.display="block";document.getElementById("success-box").style.display="none";document.getElementById("form-overlay").classList.add("open");document.body.style.overflow="hidden";}
 function openForm(){openFormDirect();}
